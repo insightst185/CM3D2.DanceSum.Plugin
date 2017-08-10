@@ -11,7 +11,7 @@ using UnityInjector.Attributes;
 namespace DanceSum.Plugin
 {
     [PluginFilter("CM3D2x64"), PluginFilter("CM3D2x86"), PluginFilter("CM3D2VRx64"),
-     PluginName("DanceSum"), PluginVersion("0.0.0.1")]
+     PluginName("DanceSum"), PluginVersion("0.0.0.2")]
 
     public class DanceSum : PluginBase
     {
@@ -21,6 +21,8 @@ namespace DanceSum.Plugin
         private FieldInfo field;
         private Boolean m_eModeFlag;
         private Vector3 rotate = new Vector3(0.0f,180.0f,0.0f);
+//        private Vector3 posison = new Vector3(0.0f,-0.2f,6.0f);
+        private Vector3 posison = new Vector3(0.0f,0.0f,0.0f);
 
         private enum TargetLevel
         {
@@ -28,7 +30,7 @@ namespace DanceSum.Plugin
         }
 
         private const int MAX_LISTED_MAID = 3;
-        private Maid[] maid = new Maid[MAX_LISTED_MAID];
+        private Maid maid;
         private Transform cameraTransform;
         private Transform lightTransform;
         public void Awake()
@@ -61,8 +63,9 @@ namespace DanceSum.Plugin
                 if(m_eMode == 3){
                     m_eModeFlag = true;
                     for (int i = 0; i < MAX_LISTED_MAID; i++){
-                        maid[i] = GameMain.Instance.CharacterMgr.GetMaid(i);
-                        maid[i].SetRot(maid[i].GetRot() + rotate);
+                        maid = GameMain.Instance.CharacterMgr.GetMaid(i);
+                        maid.SetRot(maid.GetRot() + rotate);
+                        maid.SetPos(maid.gameObject.transform.localPosition + posison);
                     }
                     cameraTransform = GameMain.Instance.MainCamera.transform;
                     lightTransform = GameMain.Instance.MainLight.gameObject.transform;
@@ -75,7 +78,7 @@ namespace DanceSum.Plugin
                 }
                 lightTransform.position = new Vector3(lightTransform.position.x * -1.0f,
                                                       lightTransform.position.y,
-                                                      lightTransform.position.z * -1.0f);
+                                                      lightTransform.position.z * -1.0f) + posison;
                 }
             }
         }
@@ -93,7 +96,7 @@ namespace DanceSum.Plugin
                 }
                 cameraTransform.position = new Vector3(cameraTransform.position.x * -1.0f,
                                                        cameraTransform.position.y,
-                                                       cameraTransform.position.z * -1.0f);
+                                                       cameraTransform.position.z * -1.0f) + posison;
             }
         }
 
